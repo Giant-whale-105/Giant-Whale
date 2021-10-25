@@ -5,11 +5,11 @@ import Navbar from './Navbar'
 import { ArrowRight } from 'react-bootstrap-icons';
 
 function TransactionList() {
-    
     const history = useHistory()
     const [TransactionData, setTransactionData] = useState('')
     const [Total, setTotal] = useState('')
-    let sum = 0
+    const [TotalDebit, setTotalDebit] = useState(0)
+    const [TotalCredit, setTotalCredit] = useState(0)
     const userTransaction = () => {
         axios.get('http://localhost:5050/api/transactiondata', {
             headers: {
@@ -17,12 +17,17 @@ function TransactionList() {
             }
         }).then((result) => {
             setTransactionData(result.data)
+            let sumOfDebit = 0, sumOfCredit = 0
             result.data.forEach((x) => {
-                sum = sum + x.amount
-                setTotal(sum)
-                console.log(x.transaction_type == "Debit" && x.amount, "Debit");
-                console.log(x.transaction_type == "Credit" && x.amount, "Credit");
+                if(x.transaction_type === "Debit") {
+                    sumOfDebit += x.final_amount;
+                } else {
+                    sumOfCredit += x.final_amount;
+                } 
             })
+            setTotal(sumOfCredit - sumOfDebit)
+            setTotalCredit(sumOfCredit)
+            setTotalDebit(sumOfDebit)
         })
     }
     useEffect(() => {
@@ -38,13 +43,13 @@ function TransactionList() {
                         <tr style={{ textAlign: "center" }}>
                             <th style={{ width: "2%" }}>#</th>
                             <th style={{ width: "5%" }}>Vender Name</th>
-                            <th style={{ width: "5%" }}>Transaction Type</th>
+                            {/* <th style={{ width: "5%" }}>Transaction Type</th> */}
                             <th style={{ width: "5%" }}>Currency</th>
                             <th style={{ width: "5%" }}>Rate</th>
-                            <th style={{ width: "5%" }}>Amount(Credit)</th>
-                            <th style={{ width: "5%" }}>Amount(Debit)</th>
+                            <th style={{ width: "5%" }}>Amount</th>
                             <th style={{ width: "5%" }}>Discount</th>
-                            <th style={{ width: "5%" }}>Final Amount</th>
+                            <th style={{ width: "5%" }}>Credit</th>
+                            <th style={{ width: "5%" }}>Debit</th>
                             <th style={{ width: "5%" }}>Transaction Data</th>
                             <th style={{ width: "10%" }}>Note</th>
                             <th style={{ width: "4%" }}>Print</th>
@@ -59,13 +64,12 @@ function TransactionList() {
                                         <tr key={id}>
                                             <td>{id}</td>
                                             <td>{item.vender_name}</td>
-                                            <td>{item.transaction_type}</td>
+                                            {/* <td>{item.transaction_type}</td> */}
                                             <td>{item.currency}</td>
-                                            <td>{item.rate}</td>
                                             <td>{item.amount}</td>
-                                            <td>{item.amount}</td>
-                                            <td>{item.discount}</td>
-                                            <td>{item.final_amount}</td>
+                                            <td>{item.rate}</td><td>{item.discount}</td>
+                                            <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? "" :item.final_amount}</td>
+                                            <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? item.final_amount : ""}</td>
                                             <td>{item.transaction_date}</td>
                                             <td>{item.note}</td>
                                             <td><ArrowRight onClick={() =>
@@ -101,7 +105,7 @@ function TransactionList() {
             <div style={{ bottom: "0%", position: "fixed", width: "100%" }}>
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <a className="navbar-brand"></a>
-                    <h5 style={{ margin: "0px auto" }}>Total Amount :  {Total}</h5>
+                    <h5 style={{ margin: "0px auto" }}>Total Credit: {TotalCredit} | Total Debit: {TotalDebit} | Total Amount : {Total}</h5>
 
                 </nav>
             </div>

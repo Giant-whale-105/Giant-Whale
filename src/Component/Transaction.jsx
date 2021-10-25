@@ -8,11 +8,11 @@ function Transaction() {
     const [vender_name, setvender_name] = useState("")
     const [transaction_type, settransaction_type] = useState("")
     const [currency, setcurrency] = useState("")
-    const [rate, setrate] = useState("")
+    const [rate, setrate] = useState(0)
     const [amount, setamount] = useState("")
-    const [discount, setdiscount] = useState('')
+    const [discount, setdiscount] = useState(0)
     const [final_amount, setfinal_amount] = useState("")
-    const [transaction_date, settransaction_date] = useState("")
+    const [transaction_date, settransaction_date] = useState(new Date())
     const [note, setnote] = useState("")
     const data = { vender_name, transaction_type, currency, rate, amount, discount, final_amount, transaction_date, note }
     const create = () => {
@@ -55,10 +55,10 @@ function Transaction() {
                     <br />
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Vender Name</Form.Label>
+                            <Form.Label>Vender Name:</Form.Label>
                             <br />
                             <select style={{ width: "100%", height: "50%" }} value="" onChange={(e) => setvender_name(e.target.value)}>
-                                <option>Please select ...</option>
+                                <option>Please select vender ...</option>
                                 {
                                     VenderNameList &&
                                     VenderNameList.map((item) => (
@@ -71,58 +71,58 @@ function Transaction() {
                             </select>
                         </Form.Group>
                         <Form.Group as={Col} controlId="formGridPassword">
-                            <Form.Label>Transaction Type</Form.Label>
+                            <Form.Label>Transaction Type:</Form.Label>
                             <select style={{ width: "100%", height: "50%" }} onChange={(e) => settransaction_type(e.target.value)}>
-                                <option>Please select ...</option>
+                                <option>Please select transaction type ...</option>
                                 <option>Credit</option>
                                 <option>Debit</option>
+                                <option >Sale</option>
+                                <option>Purchase</option>
                             </select>
                         </Form.Group>
                     </Row>
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Currency</Form.Label>
+                            <Form.Label>Currency:</Form.Label>
                             <select style={{ width: "100%", height: "50%" }} onChange={(e) => setcurrency(e.target.value)}>
-                                <option>Please select ...</option>
+                                <option>Please select currency ...</option>
                                 <option>INR(Cash)</option>
                                 <option>INR(Bank)</option>
                                 <option>USD</option>
                                 <option>RMB/CNY</option>
-                                <option >Sele</option>
-                                <option>Pares</option>
-
+                                
                             </select>
                         </Form.Group>
                         <Form.Group as={Col} controlId="formGridPassword">
-                            <Form.Label>Rate</Form.Label>
+                            <Form.Label>Rate:</Form.Label>
                             <Form.Control type="text" placeholder="Rate" onChange={(e) => setrate(e.target.value)} />
                         </Form.Group>
                     </Row>
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Amount</Form.Label>
+                            <Form.Label>Amount:</Form.Label>
                             <Form.Control type="email" placeholder="Amount" onChange={(e) => setamount(e.target.value)} />
                         </Form.Group>
                         <Form.Group as={Col} controlId="formGridPassword">
-                            <Form.Label>Discount</Form.Label>
+                            <Form.Label>Discount:</Form.Label>
                             <Form.Control type="text" placeholder="Discount" onChange={(e) => setdiscount(e.target.value)} />
                         </Form.Group>
                     </Row>
 
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formGridEmail">
-                            <Form.Label>Final Amount</Form.Label>
+                            <Form.Label>Final Amount:</Form.Label>
                             <Form.Control type="email" placeholder="Final Amount" onChange={(e) => setfinal_amount(e.target.value)} />
                         </Form.Group>
                         <Form.Group as={Col} controlId="formGridPassword">
-                            <Form.Label>Transaction Date</Form.Label>
+                            <Form.Label>Transaction Date:</Form.Label>
                             <Form.Control type="date" placeholder="Transaction Date" onChange={(e) => settransaction_date(e.target.value)} />
                         </Form.Group>
                     </Row>
-                    <Form.Label>Note</Form.Label>
-                    <Form.Control type="email" placeholder="Note" onChange={(e) => setnote(e.target.value)} />
+                    <Form.Label>Note:</Form.Label>
+                    <Form.Control type="text" placeholder="Note" onChange={(e) => setnote(e.target.value)} />
                     <br />
                     <Button style={{ margin: "0px auto",display:"flex" }} onClick={() => create()}>Save</Button>
                 </Form>
