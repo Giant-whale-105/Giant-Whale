@@ -1,4 +1,6 @@
 require('dotenv').config()
+
+const config = require("../configs/auth.config");
 const users = require('../models/users.js');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -34,17 +36,19 @@ exports.login = async (req, res) => {
     console.log(req.body);
 
     const user = await users.findOne({ email });
-    console.log(process.env.ACCESS_TOKEN_SECRET, "token123");
+    
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create token - require('crypto').randomBytes(64).toString('Hex')
-      const token = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "2h",
+      const token = jwt.sign({ user }, config.ACCESS_TOKEN_SECRET, {
+        expiresIn: config.jwtExpiration
       });
+
       user.token = token;
-      console.log(token,"token");
-      res.status(200).json({ token: token });
+      res.status(200).json({ 'token': token });
+    } else {
+
+      res.send("Invalid Credentials");
     }
-    res.send("Invalid Credentials");
   } catch (err) {
     console.log(err);
   }
