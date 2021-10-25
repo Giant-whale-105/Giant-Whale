@@ -8,11 +8,13 @@ import Vender from './Component/Vender';
 import Home from './Home';
 import TransactionList from './Component/TransactionList';
 import Print_Bill from './Component/Print_Bill';
+import Nav_bar from './Component/Navbar';
 
 function App() {
   return (
     <Router>
     <ToastContainer/>
+    <Nav_bar/>
     <Switch>
       <Route exact path="/" component={Login} />
       <Route path="/signup" component={SignUp} />

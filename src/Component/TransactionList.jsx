@@ -1,7 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import Navbar from './Navbar'
 import { ArrowRight } from 'react-bootstrap-icons';
 
 function TransactionList() {
@@ -30,8 +29,7 @@ function TransactionList() {
     }, [])
     return (
         <div>
-            <Navbar />
-            <div>
+            <div style={{padding:'15px'}}>
                 
                 <table className="table-bordered">
                     <thead>
