@@ -38,6 +38,7 @@ function Transaction() {
             }
         }).then((result) => {
             setVenderNameList(result.data)
+
         })
     }
     // console.log(VenderNameList);
@@ -47,12 +48,10 @@ function Transaction() {
     return (
         <div>
             <br />
-            <Card style={{ width: "50rem", margin: "0px auto" }}>
+            <Card style={{ width: "50rem", margin: "0px auto", padding: "10px" }}>
                 <br />
                 <Form onSubmit={handelSubmit}>
-                    {/* <Form.Label>Transaction ID</Form.Label>
-                    <Form.Control type="email" placeholder="Transaction ID" /> */}
-                    <br />
+
                     <Row className="mb-3">
                         <Form.Group as={Col} controlId="formGridEmail">
                             <Form.Label>Vender Name:</Form.Label>
@@ -118,7 +117,7 @@ function Transaction() {
                         </Form.Group>
                         <Form.Group as={Col} controlId="formGridPassword">
                             <Form.Label>Transaction Date:</Form.Label>
-                            <Form.Control type="date" placeholder="Transaction Date" onChange={(e) => settransaction_date(e.target.value)} />
+                            <Form.Control type="date" placeholder="Transaction Date" datatype={'MM/DD/YYYY'} onChange={(e) => settransaction_date(e.target.value)} />
                         </Form.Group>
                     </Row>
                     <Form.Label>Note:</Form.Label>

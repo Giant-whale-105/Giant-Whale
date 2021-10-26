@@ -9,6 +9,8 @@ import Home from './Home';
 import TransactionList from './Component/TransactionList';
 import Print_Bill from './Component/Print_Bill';
 import Nav_bar from './Component/Navbar';
+import Ledger from './Component/Ledger';
+import Print_ledger from './Component/Print_ledger';
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
       <Route path="/vender" component={Vender}/>
       <Route path="/list" component={TransactionList}/>
       <Route path="/print" component={Print_Bill}/>
+      <Route path="/ledger" component={Ledger}/>
+      <Route path="/printAllData" component={Print_ledger}/>
 
     </Switch>
   </Router>

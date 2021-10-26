@@ -1,16 +1,22 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
-import { ArrowRight } from 'react-bootstrap-icons';
+import { Button } from 'react-bootstrap'
+import { useHistory, useLocation } from 'react-router'
+import Print_ledger from './Print_ledger'
 
-function TransactionList() {
+function Ledger() {
     const history = useHistory()
     const [TransactionData, setTransactionData] = useState('')
+    const [FilterData, setFilterData] = useState('')
+    const [VenderNameList, setVenderNameList] = useState([])
+    const [Vender_Search, setVender_Search] = useState([])
     const [Total, setTotal] = useState('')
     const [TotalDebit, setTotalDebit] = useState(0)
     const [TotalCredit, setTotalCredit] = useState(0)
-    const userTransaction = () => {
-        axios.get('http://localhost:5050/api/transactiondata', {
+
+    //get transaction
+    const userTransaction = async () => {
+        await axios.get('http://localhost:5050/api/transactiondata', {
             headers: {
                 'x-access-token': localStorage.getItem('token')
             }
@@ -27,14 +33,80 @@ function TransactionList() {
             setTotal(sumOfCredit - sumOfDebit)
             setTotalCredit(sumOfCredit)
             setTotalDebit(sumOfDebit)
+
         })
     }
+    //get vender
+    function venderNameData() {
+        axios.get('http://localhost:5050/api/vender', {
+            headers: {
+                'x-access-token': localStorage.getItem('token')
+            }
+        }).then((result) => {
+            setVenderNameList(result.data)
+        })
+    }
+    //Serch Function
+    const SearchData = (e) => {
+        setFilterData(e.target.value)
+        // const userSerchData = TransactionData.filter((item) => {
+        //     if (e.target.value === "") {
+        //         return item;
+        //     } else if (
+        //         item.vender_name.toLowerCase().includes(e.target.value.toLowerCase())
+        //     ) {
+        //         return item;
+        //     }
+        // });
+        // setFilterData(userSerchData)
+    };
+    //print Function
+    const handlePrint = () => {
+        history.push({
+            pathname: "/printAllData", state: {
+                data: TransactionData
+            }
+        })
+    }
+    console.log(TransactionData)
+
     useEffect(() => {
         userTransaction()
+        venderNameData()
     }, [])
     return (
         <div>
-            <div style={{ padding: '15px' }}>
+            <div style={{ top: "0%", position: "fixed", width: "100%" }}>
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                    <a className="navbar-brand"></a>
+                    <div style={{ display: "flex", border: "1px solid", padding: "5px" }} >
+                        <div style={{ marginInline: "5px" }}>
+                            <span>Start Date : </span>
+                            <input type="date" />
+                        </div>
+                        <div style={{ marginInline: "5px" }}>
+                            <span>End Date : </span>
+                            <input type="date" />
+                        </div>
+                    </div>
+                    <div style={{ border: "1px solid", padding: "5px", marginInline: "5px" }}>
+                        <span>Vender Name : </span>
+                        <select name="vender_name" onChange={SearchData}>
+                            <option value="">Please select vender ...</option>
+                            {
+                                VenderNameList &&
+                                VenderNameList.map((item) => (
+                                    <>
+                                        <option>{item?.vender_name}</option>
+                                    </>
+                                ))
+                            }
+                        </select>
+                    </div>
+                    <Button onClick={() => handlePrint()}>Print</Button>
+                </nav>
+            </div>
+            <div>
 
                 <table className="table-bordered">
                     <thead>
@@ -50,7 +122,6 @@ function TransactionList() {
                             <th style={{ width: "5%" }}>Debit</th>
                             <th style={{ width: "5%" }}>Transaction Data</th>
                             <th style={{ width: "10%" }}>Note</th>
-                            <th style={{ width: "4%" }}>Print</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,7 +129,13 @@ function TransactionList() {
                             (
                                 <>
 
-                                    {TransactionData && TransactionData.map((item, id) => (
+                                    {TransactionData && TransactionData.filter((item) => {
+                                        if (FilterData == "") {
+                                            return item
+                                        } else if (item.vender_name.toLowerCase().includes(FilterData.toLowerCase())) {
+                                            return item
+                                        }
+                                    }).map((item, id) => (
                                         <tr key={id}>
                                             <td>{id}</td>
                                             <td>{item.vender_name}</td>
@@ -70,21 +147,6 @@ function TransactionList() {
                                             <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? item.final_amount : ""}</td>
                                             <td>{item.transaction_date}</td>
                                             <td>{item.note}</td>
-                                            <td><ArrowRight onClick={() =>
-                                                history.push({
-                                                    pathname: '/print',
-                                                    state: {
-                                                        vender_name: item.vender_name,
-                                                        transaction_type: item.transaction_type,
-                                                        currency: item.currency,
-                                                        rate: item.rate,
-                                                        amount: item.amount,
-                                                        discount: item.discount,
-                                                        final_amount: item.final_amount,
-                                                        transaction_date: item.transaction_date,
-                                                        note: item.note
-                                                    }
-                                                })}></ArrowRight></td>
                                         </tr>
                                     ))}
                                 </>) : (
@@ -116,4 +178,4 @@ function TransactionList() {
     )
 }
 
-export default TransactionList
+export default Ledger
