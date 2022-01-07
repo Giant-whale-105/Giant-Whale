@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Table } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import Navbar from "./Navbar"
 function Vender() {
     const [vender_name, setvender_name] = useState("")
     const [allData, setallData] = useState([])
@@ -46,20 +47,20 @@ function Vender() {
         vendernamedata()
     }
     return (
-        <div>
+        <div><main id="main" class="main">
+            
 
             <input type="name" placeholder="Vender Name" onChange={(e) => {
                 setvender_name(e.target.value);
             }} />
             <button onClick={() => VenderData()}>Save</button>
 
-            <Table className="table-bordered"  style={{ width: "20%", margin: '0px auto' }}>
+            <Table striped bordered hover size="sm" style={{ width: "20rem", margin: '0px auto' }}>
 
                 <thead>
-                    <tr style={{textAlign:'center'}}>
+                    <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Opsin</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,7 +89,7 @@ function Vender() {
                 </tbody>
             </Table>
 
-        </div>
+        </main></div>
     )
 }
 

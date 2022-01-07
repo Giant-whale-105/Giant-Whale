@@ -4,10 +4,13 @@ import TransactionList from "./Component/TransactionList";
 function Home() {
 
   return (
-    <div>
-      {/* <Navbar /> */}
-      <TransactionList/>
-    </div>
+    
+
+    <main id="main" class="main">
+      <div>
+        <TransactionList/>
+      </div>
+    </main>
   );
 }
 

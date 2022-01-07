@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
+import Navbar from './Navbar'
 import { ArrowRight } from 'react-bootstrap-icons';
 
 function TransactionList() {
@@ -9,6 +10,7 @@ function TransactionList() {
     const [Total, setTotal] = useState('')
     const [TotalDebit, setTotalDebit] = useState(0)
     const [TotalCredit, setTotalCredit] = useState(0)
+    
     const userTransaction = () => {
         axios.get('http://localhost:5050/api/transactiondata', {
             headers: {
@@ -18,11 +20,11 @@ function TransactionList() {
             setTransactionData(result.data)
             let sumOfDebit = 0, sumOfCredit = 0
             result.data.forEach((x) => {
-                if (x.transaction_type === "Debit") {
+                if(x.transaction_type === "Debit") {
                     sumOfDebit += x.final_amount;
                 } else {
                     sumOfCredit += x.final_amount;
-                }
+                } 
             })
             setTotal(sumOfCredit - sumOfDebit)
             setTotalCredit(sumOfCredit)
@@ -32,10 +34,72 @@ function TransactionList() {
     useEffect(() => {
         userTransaction()
     }, [])
+
     return (
         <div>
-            <div style={{ padding: '15px' }}>
+            <div>
+                
+            <table class="table datatable">
+                <thead>
+                    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Vender Name</th>
+                    <th scope="col">Currency</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Discount</th>
+                    <th scope="col">Credit</th>
+                    <th scope="col">Debit</th>
+                    <th scope="col">Transaction Data</th>
+                    <th scope="col">Note</th>
+                    <th scope="col">Print</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {TransactionData ?
+                    (
+                        <>
+                            {TransactionData && TransactionData.map((item, id) => (
+                                <tr key={id}>
+                                    <th scope="row">{id}</th>
+                                    <td>{item.vender_name}</td>
+                                    {/* <td>{item.transaction_type}</td> */}
+                                    <td>{item.currency}</td>
+                                    <td>{item.amount}</td>
+                                    <td>{item.rate}</td><td>{item.discount}</td>
+                                    <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? "" :item.final_amount}</td>
+                                    <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? item.final_amount : ""}</td>
+                                    <td>{item.transaction_date}</td>
+                                    <td>{item.note}</td>
+                                    <td><ArrowRight onClick={() =>
+                                        history.push({
+                                            pathname: '/print',
+                                            state: {
+                                                vender_name: item.vender_name,
+                                                transaction_type: item.transaction_type,
+                                                currency: item.currency,
+                                                rate: item.rate,
+                                                amount: item.amount,
+                                                discount: item.discount,
+                                                final_amount: item.final_amount,
+                                                transaction_date: item.transaction_date,
+                                                note: item.note
+                                            }
+                                        })}></ArrowRight></td>
+                                </tr>
+                            ))}
+                        </>) : (
+                        <div>
+                            <br />
+                            <button class="btn btn-primary" type="button" disabled>
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                Loading...
+                            </button>
+                        </div>
 
+                    )}
+                </tbody>
+                </table>
                 <table className="table-bordered">
                     <thead>
                         <tr style={{ textAlign: "center" }}>
@@ -66,7 +130,7 @@ function TransactionList() {
                                             <td>{item.currency}</td>
                                             <td>{item.amount}</td>
                                             <td>{item.rate}</td><td>{item.discount}</td>
-                                            <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? "" : item.final_amount}</td>
+                                            <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? "" :item.final_amount}</td>
                                             <td>{item.transaction_type === "Debit" || item.transaction_type === "Sale" ? item.final_amount : ""}</td>
                                             <td>{item.transaction_date}</td>
                                             <td>{item.note}</td>
@@ -103,12 +167,8 @@ function TransactionList() {
             <div style={{ bottom: "0%", position: "fixed", width: "100%" }}>
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <a className="navbar-brand"></a>
-                    <div style={{ display: "flex", margin: "0px auto" }} >
-                        <h5 style={{ border: "1px solid", padding: "5px", margin: "5px" }}>Total Credit: {TotalCredit}</h5>
-                        <h5 style={{ border: "1px solid", padding: "5px", margin: "5px" }}>Total Debit: {TotalDebit}</h5>
-                        <h5 style={{ border: "1px solid", padding: "5px", margin: "5px" }}>Total Amount : {Total}</h5>
-                        {/* <h5 >Total Credit: {TotalCredit} | Total Debit: {TotalDebit} | Total Amount : {Total}</h5> */}
-                    </div>
+                    <h5 style={{ margin: "0px auto" }}>Total Credit: {TotalCredit} | Total Debit: {TotalDebit} | Total Amount : {Total}</h5>
+
                 </nav>
             </div>
 
